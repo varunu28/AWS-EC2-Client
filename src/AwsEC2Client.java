@@ -3,8 +3,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
-import com.amazonaws.services.ec2.model.Instance;
-import com.amazonaws.services.ec2.model.Reservation;
+import com.amazonaws.services.ec2.model.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,9 +30,9 @@ public class AwsEC2Client {
     public void findRunningInstances() {
         List<Reservation> reservations = client.describeInstances().getReservations();
 
+        System.out.println("Here is a list of running EC2 instances: ");
         for (Reservation reservation : reservations) {
             List<Instance> instances = reservation.getInstances();
-            System.out.println("Here is a list of running EC2 instances: ");
             for (Instance instance : instances) {
                 if("running".equals(instance.getState().getName())) {
                     System.out.printf("Instance Id: %s || Instance Public IP: %s || Instance Tags: %s%n",
@@ -49,6 +48,26 @@ public class AwsEC2Client {
         }
 
         return awsEC2Client;
+    }
+
+    public void launchEC2Instance(String imageId, String securityGroup, String key_name, int numOfInstances) {
+        try {
+            RunInstancesRequest runInstancesRequest = new RunInstancesRequest();
+
+            runInstancesRequest.
+                    withImageId(imageId).
+                    withInstanceType(InstanceType.T2Micro).
+                    withMinCount(1).
+                    withMaxCount(numOfInstances).
+                    withKeyName(key_name).
+                    withSecurityGroups(securityGroup);
+
+            RunInstancesResult runInstancesResult = client.runInstances(runInstancesRequest);
+
+            System.out.println(numOfInstances + " EC2 instance(s) created successfully");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void loadCredentials() {
