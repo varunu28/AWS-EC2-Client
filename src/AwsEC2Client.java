@@ -27,14 +27,20 @@ public class AwsEC2Client {
                     build();
     }
 
-    public void findRunningInstances() {
+    /**
+     * This method lists the instance in a given state
+     *
+     * @param state The state of the instance
+     * Prints the instance id, instance public IP & tags of the instance in a given state
+     **/
+    public void listInstances(String state) {
         List<Reservation> reservations = client.describeInstances().getReservations();
 
-        System.out.println("Here is a list of running EC2 instances: ");
+        System.out.println("Here is a list of EC2 instances in " + state + " state: ");
         for (Reservation reservation : reservations) {
             List<Instance> instances = reservation.getInstances();
             for (Instance instance : instances) {
-                if("running".equals(instance.getState().getName())) {
+                if(state.equalsIgnoreCase(instance.getState().getName())) {
                     System.out.printf("Instance Id: %s || Instance Public IP: %s || Instance Tags: %s%n",
                             instance.getInstanceId(), instance.getPublicIpAddress(), instance.getTags());
                 }
@@ -42,14 +48,15 @@ public class AwsEC2Client {
         }
     }
 
-    public static AwsEC2Client getEC2Client() {
-        if (awsEC2Client == null) {
-            awsEC2Client = new AwsEC2Client();
-        }
-
-        return awsEC2Client;
-    }
-
+    /**
+     * This method launches an EC2 instance
+     *
+     * @param imageId The ID of the AMI
+     * @param securityGroup Security Group of AMI
+     * @param key_name Name of EC2 key pair
+     * @param numOfInstances Maximum number of instances to be launched
+     * Launches an EC2 instance with given specification
+     **/
     public void launchEC2Instance(String imageId, String securityGroup, String key_name, int numOfInstances) {
         try {
             RunInstancesRequest runInstancesRequest = new RunInstancesRequest();
@@ -68,6 +75,14 @@ public class AwsEC2Client {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static AwsEC2Client getEC2Client() {
+        if (awsEC2Client == null) {
+            awsEC2Client = new AwsEC2Client();
+        }
+
+        return awsEC2Client;
     }
 
     private void loadCredentials() {
