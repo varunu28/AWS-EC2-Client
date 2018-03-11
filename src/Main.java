@@ -17,5 +17,17 @@ public class Main {
 
         // List all running instances
         awsEC2Client.listInstances("running");
+
+        // Start a stopped instance
+        awsEC2Client.startEC2Instance("i-0544139c1ce31507c");
+
+        // Start a stopped instance
+        awsEC2Client.stopEC2Instance("i-0544139c1ce31507c");
+
+        // Reboot an EC2 instance
+        awsEC2Client.rebootEC2Instance("i-0544139c1ce31507c");
+
+        // Get complete desciption about an instance
+        awsEC2Client.describeInstance("i-0544139c1ce31507c");
     }
 }

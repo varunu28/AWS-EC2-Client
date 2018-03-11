@@ -77,6 +77,90 @@ public class AwsEC2Client {
         }
     }
 
+     /**
+     * This method starts an EC2 instance
+     *
+     * @param instanceId The ID of the stopped instance
+     * Starts the EC2 instance which is in stopped state
+     **/
+    public void startEC2Instance(String instanceId) {
+        try {
+            StartInstancesRequest startInstancesRequest = new StartInstancesRequest();
+            startInstancesRequest.withInstanceIds(instanceId);
+            StartInstancesResult startInstancesResult = client.startInstances(startInstancesRequest);
+
+            System.out.println("Instance started successfully");
+        } catch (AmazonEC2Exception e) {
+            System.out.println(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * This method stops an EC2 instance
+     *
+     * @param instanceId The ID of the instance
+     * Stops the EC2 instance
+     **/
+    public void stopEC2Instance(String instanceId) {
+        try {
+            StopInstancesRequest stopInstancesRequest = new StopInstancesRequest();
+            stopInstancesRequest.withInstanceIds(instanceId);
+            StopInstancesResult stopInstancesResult = client.stopInstances(stopInstancesRequest);
+
+            System.out.println("Instance stopped successfully");
+        } catch (AmazonEC2Exception e) {
+            System.out.println(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * This method reboots an EC2 instance
+     *
+     * @param instanceId The ID of the instance
+     * Reboots the EC2 instance
+     **/
+    public void rebootEC2Instance(String instanceId) {
+        try {
+            RebootInstancesRequest rebootInstancesRequest = new RebootInstancesRequest();
+            rebootInstancesRequest.withInstanceIds(instanceId);
+            RebootInstancesResult rebootInstancesResult = client.rebootInstances(rebootInstancesRequest);
+
+            System.out.println("Instance rebooted successfully");
+        } catch (AmazonEC2Exception e) {
+            System.out.println(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * This method provides the complete desciption of EC2 instance
+     *
+     * @param instanceId The ID of the instance
+     * Prints instance id, image id, instance state, instance type, instance state & monitoring state
+     **/
+    public void describeInstance(String instanceId) {
+        List<Reservation> reservations = client.describeInstances().getReservations();
+
+        for (Reservation reservation : reservations) {
+            for (Instance instance : reservation.getInstances()) {
+                if (instance.getInstanceId().equals(instanceId)) {
+                    System.out.printf("Instance with id %s has the following attributes \n" +
+                                        "AMI: %s\n" +
+                                        "Type: %s\n" +
+                                        "Instance State: %s\n" +
+                                        "Monitoring state: %s\n",
+                                        instance.getInstanceId(),
+                                        instance.getImageId(),
+                                        instance.getInstanceType(),
+                                        instance.getState().getName(),
+                                        instance.getMonitoring().getState());
+                    return;
+                }
+            }
+        }
+
+        System.out.println("No instance with " + instanceId + " found");
+    }
+
     public static AwsEC2Client getEC2Client() {
         if (awsEC2Client == null) {
             awsEC2Client = new AwsEC2Client();
