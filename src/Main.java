@@ -13,7 +13,7 @@ public class Main {
 
         // Launch an EC2 instance
         awsEC2Client.
-                launchEC2Instance("ami-97785bed","MyWebDMZ", "udemy_key", 2);
+                launchEC2Instance("ami-97785bed","MyWebDMZ", "udemy_key", 1);
 
         // List all running instances
         awsEC2Client.listInstances("running");
@@ -29,5 +29,11 @@ public class Main {
 
         // Get complete desciption about an instance
         awsEC2Client.describeInstance("i-0544139c1ce31507c");
+
+        // Enables detailed monitoring on an instance
+        awsEC2Client.startMonitoringAnInstance("i-0507954d2c6376136");
+
+        // Disables detailed monitoring on an instance
+        awsEC2Client.stopMonitoringAnInstance("i-0507954d2c6376136");
     }
 }

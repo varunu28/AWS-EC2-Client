@@ -13,6 +13,8 @@ Update the path to your credentials file under ```CREDENTIALS_FILE```
  - Stop an EC2 Instance ```stopEC2Instance```
  - Reboot an EC2 Instance ```rebootEC2Instance```
  - Get the description of an EC2 Instance ```describeInstance```
+ - Start detailed monitoring on an EC2 Instance ```startMonitoringAnInstance```
+ - Stop detailed monitoring on an EC2 Instance ```stopMonitoringAnInstance```
  
  **NOTE:** A ```singleton``` design pattern is implemented to avoid opening multiple EC2Client connections
 

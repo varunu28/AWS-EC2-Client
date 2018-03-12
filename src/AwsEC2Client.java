@@ -161,6 +161,40 @@ public class AwsEC2Client {
         System.out.println("No instance with " + instanceId + " found");
     }
 
+    /**
+     * This method starts the monitoring of an EC2 instance
+     *
+     * @param instanceId The ID of the instance
+     * Starts monitoring on the instance with given instance id
+     **/
+    public void startMonitoringAnInstance(String instanceId) {
+        try {
+            MonitorInstancesRequest monitorInstancesRequest = new MonitorInstancesRequest();
+            monitorInstancesRequest.withInstanceIds(instanceId);
+            MonitorInstancesResult monitorInstancesResult = client.monitorInstances(monitorInstancesRequest);
+            System.out.println("Monitory instance with instance id: " + instanceId);
+        } catch (AmazonEC2Exception e) {
+            System.out.println(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * This method stops the monitoring of an EC2 instance
+     *
+     * @param instanceId The ID of the instance
+     * Stops the monitoring on the instance with given instance id
+     **/
+    public void stopMonitoringAnInstance(String instanceId) {
+        try {
+            UnmonitorInstancesRequest unmonitorInstancesRequest = new UnmonitorInstancesRequest();
+            unmonitorInstancesRequest.withInstanceIds(instanceId);
+            UnmonitorInstancesResult unmonitorInstancesResult = client.unmonitorInstances(unmonitorInstancesRequest);
+            System.out.println("Stopped monitoring instance with instance id: " + instanceId);
+        } catch (AmazonEC2Exception e) {
+            System.out.println(e.getErrorMessage());
+        }
+    }
+
     public static AwsEC2Client getEC2Client() {
         if (awsEC2Client == null) {
             awsEC2Client = new AwsEC2Client();
